@@ -220,7 +220,7 @@ if (config.enable) {
         print.log('live2d tag detected, use tagMode.');
 
       }
-      const scriptToInject = `live2d_settings=${JSON.stringify(config.live2d_settings)};live2d_models=[{name: 'lafei',message: '',version: 3,}];`;
+      const scriptToInject = `live2d_settings=${JSON.stringify(config.live2d_settings)};live2d_models=${JSON.stringify(config.live2d_models)};`
       const contentToInject = `\
         <div id="waifu">\
             <div id="waifu-message"></div>\
@@ -262,7 +262,7 @@ if (config.enable) {
   if (!config.tagMode) {
     hexo.extend.filter.register('after_render:html', (htmlContent) => {
 
-      const scriptToInject = `live2d_settings=${JSON.stringify(config.live2d_settings)};live2d_models=[{name: 'lafei',message: '',version: 3,}];`;
+      const scriptToInject = `live2d_settings=${JSON.stringify(config.live2d_settings)};live2d_models=${JSON.stringify(config.live2d_models)};`;
       const contentToInject = `\
         <div id="waifu">\
             <div id="waifu-message"></div>\
