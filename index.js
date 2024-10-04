@@ -278,7 +278,7 @@ if (config.enable) {
             </div>\
             <canvas id="live2d2"></canvas>\
             <canvas id="live2d4"></canvas>\
-        </div>\\
+        </div>\
         <script>${scriptToInject}</script>\
         <script src="${scriptUrlToInject}"></script>\
         <script async type="module" src="${waifuUrlToInject}"></script>\
