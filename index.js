@@ -1,5 +1,5 @@
 /**
- * @description The live2d-widget generator for hexo
+ * @description The live2donweb generator for hexo
  */
 /* global hexo */
 
@@ -17,12 +17,14 @@ const print = require('./lib/print');
 
 const generators = [];
 
-const manifest = require('live2d-widget/lib/manifest');
-const mainfestPath = require.resolve('live2d-widget/lib/manifest');
-const coreScriptName = manifest['main.js'];
+const coreScriptName = 'live2d_bundle.js';
+const coreScriptPath = require.resolve('live2dweb/dist/live2d_bundle.js');
+const waifuScriptName = 'waifu-tips.js';
+const waifuScriptPath = require.resolve('./waifu-tips.js');
 const thisPkgInfo = require('./package');
-const widgetVer = thisPkgInfo.dependencies['live2d-widget'];
-const localWidgetVer = require(path.resolve(require.resolve('live2d-widget'), '../../', 'package')).version;
+const buildGenerator = require('./lib/buildGenerator');
+const widgetVer = thisPkgInfo.dependencies['live2dweb'];
+const localWidgetVer = require(path.resolve(require.resolve('live2dweb'), '../../', 'package')).version;
 
 const blogRoot = hexo.config.root || '/';
 
@@ -49,7 +51,7 @@ function getScriptURL (scriptFrom) { // eslint-disable-line max-lines-per-functi
 
   if (config.log) {
 
-    print.log(`hexo-helper-live2d@${thisPkgInfo.version}, using live2d-widget@${widgetVer}.`);
+    print.log(`hexo-helper-live2d-onweb@${thisPkgInfo.version}, using live2dweb@${widgetVer}.`);
 
   }
 
@@ -63,11 +65,11 @@ function getScriptURL (scriptFrom) { // eslint-disable-line max-lines-per-functi
      */
     if (config.log) {
 
-      print.log(`use local live2d-widget@${localWidgetVer}`);
+      print.log(`use local live2dweb@${localWidgetVer}`);
 
     }
-    const scriptGenerators = buildGeneratorsFromManifest(manifest, path.dirname(mainfestPath), `${config.pluginRootPath}${config.pluginJsPath}`);
-    const useHash = getFileMD5(path.resolve(path.dirname(mainfestPath), coreScriptName));
+    const scriptGenerators = [buildGenerator(coreScriptPath,url.resolve(`${config.pluginRootPath}${config.pluginJsPath}`,coreScriptName))];
+    const useHash = getFileMD5(coreScriptPath);
     generators.push(...scriptGenerators);
     return `${blogRoot}${url.resolve(`${config.pluginRootPath}${config.pluginJsPath}`, coreScriptName)}?${useHash}`;
 
@@ -78,14 +80,14 @@ function getScriptURL (scriptFrom) { // eslint-disable-line max-lines-per-functi
      * Is jsdelivr online CDN(2)
      * Use jsdelivr
      */
-    return `https://cdn.jsdelivr.net/npm/live2d-widget@${widgetVer}/lib/${coreScriptName}`;
+    return `https://cdn.jsdelivr.net/npm/Live2dOnWeb@${widgetVer}/lib/${coreScriptName}`;
   case 'unpkg':
 
     /*
      * Is unpkg online CDN(3)
      * Use unpkg
      */
-    return `https://unpkg.com/live2d-widget@${widgetVer}/lib/${coreScriptName}`;
+    return `https://unpkg.com/Live2dOnWeb@${widgetVer}/lib/${coreScriptName}`;
   default:
 
     /*
@@ -166,7 +168,7 @@ if (config.enable) {
          */
         const packageJsonPath = path.resolve(getNodeModulePath(config.model.use), 'package.json');
         const packageJsonObj = require(packageJsonPath); // eslint-disable-line global-require
-        const assetsDir = path.resolve(getNodeModulePath(config.model.use), './assets/');
+        const assetsDir = path.resolve(getNodeModulePath(config.model.use), config.pluginModelPath);
         const {
           modelGenerators,
           'modelJsonUrl': pkgModelJsonUrl,
@@ -188,12 +190,26 @@ if (config.enable) {
 
     }
     _.unset(config, 'model.use');
-    config = _.set(config, 'model.jsonPath', modelJsonUrl);
+
+    var modelVersion = modelJsonUrl.endsWith('.model3.json') ? 3 : 2;
+
+    config = _.set(config, 'live2d_models', [{
+      name: config.live2d_settings.modelName,                                     // 模型名称要与文件夹名相同
+      message: '',  // 切换时的提示信息
+      version: modelVersion,                                         // 模型版本，model3.json 结尾的都填3，model.json 结尾的填2
+      // position: 'left'                                 // 此模型的显示位置，会覆盖上面的全局设置，只对此模型生效
+    }],);
+
+    config = _.set(config, 'live2d_settings.modelUrl', modelJsonUrl.replace(/\/[^\/]*\/[^\/]+\.model(3)?\.json$/, '/'));
 
   }
 
+  var scriptGenerators = [buildGenerator(waifuScriptPath,url.resolve(`${config.pluginRootPath}${config.pluginJsPath}`,waifuScriptName))];
+  generators.push(...scriptGenerators);
+
   const scriptUrlToInject = getScriptURL(config.scriptFrom);
   _.unset(config, 'scriptFrom');
+  const waifuUrlToInject = `${blogRoot}${url.resolve(`${config.pluginRootPath}${config.pluginJsPath}`,waifuScriptName)}`;
 
   if (config.tagMode) {
 
@@ -204,8 +220,27 @@ if (config.enable) {
         print.log('live2d tag detected, use tagMode.');
 
       }
-      const scriptToInject = `L2Dwidget.init(${JSON.stringify(config)});`;
-      const contentToInject = `<script src="${scriptUrlToInject}"></script><script>${scriptToInject}</script>`;
+      const scriptToInject = `live2d_settings=${JSON.stringify(config.live2d_settings)};live2d_models=[{name: 'lafei',message: '',version: 3,}];`;
+      const contentToInject = `\
+        <div id="waifu">\
+            <div id="waifu-message"></div>\
+            <div class="waifu-tool">\
+                <span class="icon-next"></span>\
+                <span class="icon-home"></span>\
+                <span class="icon-message"></span>\
+                <span class="icon-camera"></span>\
+                <span class="icon-volumeup"></span>\
+                <span class="icon-volumedown"></span>\
+                <span class="icon-about"></span>\
+                <span class="icon-cross"></span>\
+            </div>\
+            <canvas id="live2d2"></canvas>\
+            <canvas id="live2d4"></canvas>\
+        </div>\\
+        <script>${scriptToInject}</script>\
+        <script src="${scriptUrlToInject}"></script>\
+        <script async type="module" src="${waifuUrlToInject}"></script>\
+        `;
       return contentToInject;
 
     });
@@ -225,11 +260,29 @@ if (config.enable) {
    * https://github.com/Troy-Yang/hexo-lazyload-image/blob/master/lib/addscripts.js
    */
   if (!config.tagMode) {
-
     hexo.extend.filter.register('after_render:html', (htmlContent) => {
 
-      const scriptToInject = `L2Dwidget.init(${JSON.stringify(config)});`;
-      const contentToInject = `<script src="${scriptUrlToInject}"></script><script>${scriptToInject}</script>`;
+      const scriptToInject = `live2d_settings=${JSON.stringify(config.live2d_settings)};live2d_models=[{name: 'lafei',message: '',version: 3,}];`;
+      const contentToInject = `\
+        <div id="waifu">\
+            <div id="waifu-message"></div>\
+            <div class="waifu-tool">\
+                <span class="icon-next"></span>\
+                <span class="icon-home"></span>\
+                <span class="icon-message"></span>\
+                <span class="icon-camera"></span>\
+                <span class="icon-volumeup"></span>\
+                <span class="icon-volumedown"></span>\
+                <span class="icon-about"></span>\
+                <span class="icon-cross"></span>\
+            </div>\
+            <canvas id="live2d2"></canvas>\
+            <canvas id="live2d4"></canvas>\
+        </div>\\
+        <script>${scriptToInject}</script>\
+        <script src="${scriptUrlToInject}"></script>\
+        <script async type="module" src="${waifuUrlToInject}"></script>\
+        `;
       let newHtmlContent = htmlContent;
       if ((/([\n\r\s\t]*<\/body>)/i).test(htmlContent)) {
 
