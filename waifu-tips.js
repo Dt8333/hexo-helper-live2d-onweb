@@ -259,6 +259,14 @@ function initModel() {
         window.setTimeout(function () {
             waifu.classList.add('hide');
             // document.getElementById('show-live2d').classList.remove('btnHide');
+            if (window.live2dCurrentVersion === 2) {
+                window.live2dv2.release();
+                $$(`#${live2dId2}`).style.display = 'none';
+            } else {
+                window.live2dv4.release();
+                $$(`#${live2dId4}`).style.display = 'none';
+            }
+            window.live2dCurrentVersion = undefined;
         }, 1000);
     })
 
@@ -299,6 +307,35 @@ function initModel() {
         });
     } else {
         loadModel(modelName);
+    }
+
+    document.addEventListener('visibilitychange', visibilitychange);
+}
+
+function visibilitychange() {
+    if (document.visibilityState === 'visible') {
+        // 页面变为可见状态时执行的操作
+        console.log('visible');
+
+        let modelName = getLS('modelName');
+        if (!live2d_settings.modelStorage || modelName == null)
+            modelName = live2d_settings.modelName;
+
+        loadModel(modelName);
+
+    } else if (document.visibilityState === 'hidden') {
+        // 页面变为不可见状态时执行的操作
+
+        console.log('hidden');
+        if (window.live2dCurrentVersion === 2) {
+            window.live2dv2.release();
+            $$(`#${live2dId2}`).style.display = 'none';
+        } else {
+            window.live2dv4.release();
+            $$(`#${live2dId4}`).style.display = 'none';
+        }
+        window.live2dCurrentVersion=undefined;
+
     }
 }
 
@@ -678,4 +715,5 @@ color:#43CBFF
 initModel();
 window.downloadCap = blobDownload;
 window.initModel = initModel;
-export {showMessage, initModel}
+window.visibilitychange = visibilitychange;
+export {showMessage, initModel,visibilitychange}
