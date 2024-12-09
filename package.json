@@ -47,19 +47,9 @@
   "license": "GPL-2.0",
   "repository": {
     "type": "git",
-    "url": "git://github.com/EYHN/hexo-helper-live2d.git"
+    "url": "https://github.com/Dt8333/hexo-helper-live2d-onweb.git"
   },
-  "bugs": {
-    "url": "https://github.com/EYHN/hexo-helper-live2d/issues"
-  },
-  "homepage": "https://github.com/EYHN/hexo-helper-live2d#readme",
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
-    }
-  },
-  "collective": {
-    "type": "opencollective",
-    "url": "https://opencollective.com/hexo-helper-live2d"
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/Dt8333"
   }
 }
