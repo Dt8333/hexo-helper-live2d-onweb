@@ -5,6 +5,26 @@ __metadata:
   version: 8
   cacheKey: 10c0
 
+"@Dt8333/hexo-helper-live2d-onweb@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "@Dt8333/hexo-helper-live2d-onweb@workspace:."
+  dependencies:
+    colors: "npm:^1.3.3"
+    commitizen: "npm:^3.0.7"
+    cz-conventional-changelog: "npm:^2.1.0"
+    eslint: "npm:^5.16.0"
+    hexo-fs: "npm:^1.0.2"
+    hexo-log: "npm:^0.2.0"
+    live2d-widget-model-wanko: "npm:^1.0.5"
+    live2dweb: "https://github.com/Dt8333/Live2dOnWeb.git#1.1.1-SDK5-r.1"
+    lodash: "npm:^4.17.11"
+    npm-check-updates: "npm:^3.1.3"
+    opencollective: "npm:^1.0.3"
+    opencollective-postinstall: "npm:^2.0.2"
+    path: "npm:^0.12.7"
+  languageName: unknown
+  linkType: soft
+
 "@babel/code-frame@npm:^7.0.0":
   version: 7.25.7
   resolution: "@babel/code-frame@npm:7.25.7"
@@ -2075,26 +2095,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hexo-helper-live2d-onweb@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "hexo-helper-live2d-onweb@workspace:."
-  dependencies:
-    colors: "npm:^1.3.3"
-    commitizen: "npm:^3.0.7"
-    cz-conventional-changelog: "npm:^2.1.0"
-    eslint: "npm:^5.16.0"
-    hexo-fs: "npm:^1.0.2"
-    hexo-log: "npm:^0.2.0"
-    live2d-widget-model-wanko: "npm:^1.0.5"
-    live2dweb: ../Live2dOnWeb
-    lodash: "npm:^4.17.11"
-    npm-check-updates: "npm:^3.1.3"
-    opencollective: "npm:^1.0.3"
-    opencollective-postinstall: "npm:^2.0.2"
-    path: "npm:^0.12.7"
-  languageName: unknown
-  linkType: soft
-
 "hexo-log@npm:^0.2.0":
   version: 0.2.0
   resolution: "hexo-log@npm:0.2.0"
@@ -2838,12 +2838,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"live2dweb@file:../Live2dOnWeb::locator=hexo-helper-live2d-onweb%40workspace%3A.":
-  version: 1.0.0
-  resolution: "live2dweb@file:../Live2dOnWeb#../Live2dOnWeb::hash=739a8e&locator=hexo-helper-live2d-onweb%40workspace%3A."
+"live2dweb@https://github.com/Dt8333/Live2dOnWeb.git#1.1.1-SDK5-r.1":
+  version: 1.1.1
+  resolution: "live2dweb@https://github.com/Dt8333/Live2dOnWeb.git#commit=d29bbe4dc37aabdddf1504eac88edb7bf4382ac6"
   dependencies:
     whatwg-fetch: "npm:^3.0.0"
-  checksum: 10c0/012cf6422fcf02995921000a2e59d17454a8fed42121a2895b98b664dd63db92da86817274dc68f48c075dc1ce34fe3bb4f56b90fac7417a28567935c3af263f
+  checksum: 10c0/268cf627efe625c37830a2ea686e3c281c7cb1aed47684cc249106ba1c3cffeefc4e7aeb1944592ba53c7451f17ed172c5ea901504a805ac0b8ae880afdba712
   languageName: node
   linkType: hard
 
